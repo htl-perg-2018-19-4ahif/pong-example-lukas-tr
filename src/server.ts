@@ -15,7 +15,7 @@ server.listen(port, () => {
   console.log(`Server live on port ${port}`);
 });
 
-const allUsers = [];
+const allUsers: { name: string; socket: sio.Socket }[] = [];
 
 const emitUserChange = () => {
   io.emit("users changed", {
@@ -27,7 +27,7 @@ io.on("connection", socket => {
   let addedUser = false; // user already added
   let name = "";
 
-  let gameLoopInterval;
+  let gameLoopInterval: NodeJS.Timeout;
 
   emitUserChange();
 
