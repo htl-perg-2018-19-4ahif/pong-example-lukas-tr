@@ -86,4 +86,12 @@ socket.on("join accept", ({ partner }) => {
   socket.on("ball change", ({ direction, position }) => {
     console.log("ball changed position or direction", direction, position);
   });
+
+  socket.on("game ended", ({ win }) => {
+    console.log("game ended, you", win ? "won" : "lost");
+  });
+
+  socket.on("score changed", ({ you, enemy }) => {
+    console.log("you have", you, "points, the enemy has", enemy, "points");
+  });
 });
