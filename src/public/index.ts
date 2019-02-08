@@ -94,4 +94,14 @@ socket.on("join accept", ({ partner }) => {
   socket.on("score changed", ({ you, enemy }) => {
     console.log("you have", you, "points, the enemy has", enemy, "points");
   });
+
+  $("#leaveGame").click(() => {
+    socket.emit("leave game");
+  });
+
+  socket.on("partner left", () => {
+    // called for this client and partner client
+    alert("Your partner left");
+    location.reload();
+  });
 });

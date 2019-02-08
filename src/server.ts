@@ -57,8 +57,6 @@ io.on("connection", socket => {
     }
   };
 
-  let gameLoopInterval: NodeJS.Timeout;
-
   emitUserChange();
 
   socket.on("join accept", ({ username }) => {
@@ -67,6 +65,8 @@ io.on("connection", socket => {
     if (partner.requestedPartnerName === context.name) {
       partner.partnerName = context.name;
       context.user.partnerName = username;
+      context.user.requestedPartnerName = undefined;
+      context.partner.requestedPartnerName = undefined;
       socket.emit("join accept", { partner: context.partner.name });
       context.partner.socket.emit("join accept", { partner: context.name });
     }
@@ -100,8 +100,9 @@ io.on("connection", socket => {
   });
 
   socket.on("disconnect", () => {
-    clearInterval(gameLoopInterval);
     if (context.userAdded) {
+      onLeavePartner();
+
       allUsers.splice(allUsers.findIndex(u => u.name === context.name), 1);
       console.log(`user ${context.name} left`);
 
@@ -111,6 +112,21 @@ io.on("connection", socket => {
       emitUserChange();
     }
   });
+
+  const onLeavePartner = () => {
+    if (!context.userAdded || !context.partner) return;
+
+    const partner = context.partner;
+    const user = context.user;
+
+    socket.emit("partner left");
+    partner.socket.emit("partner left");
+
+    user.partnerName = undefined;
+    partner.partnerName = undefined;
+  };
+
+  socket.on("leave game", onLeavePartner);
 });
 
 enum Directions {
