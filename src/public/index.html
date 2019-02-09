@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pong</title>
+    <link type="text/css" rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <h1>Pong</h1>
+    <div id="canvas-wrap">
+        <div id="paddle" class="paddle"></div>
+        <canvas id="myCanvas" width="1400" height="600"></canvas>
+    </div>
+    
+    <div id="loginPage">
+        name input
+        <input type="text" id="nameInput" />
+        <button type="button" id="submitName">Submit</button>
+    </div>
+
+    <div id="partnerChooser">
+        click on a user to play
+        <ul id="userList"></ul>
+    </div>
+
+    <br />
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/index.js"></script>
+</body>
+
+</html>

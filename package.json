@@ -1,0 +1,28 @@
+{
+    "name": "pong",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "build": "tsc && cpx ./src/**/*.html ./dist",
+        "start": "node dist/server",
+        "dev": "concurrently \"tsc --watch\" \"cpx ./src/**/*.{html,css} ./dist --watch\" \"nodemon dist/server\""
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/chokidar": "^1.7.5",
+        "@types/express": "^4.16.0",
+        "@types/jquery": "^3.3.29",
+        "@types/socket.io": "^2.1.2",
+        "concurrently": "^4.1.0",
+        "cpx": "^1.5.0",
+        "nodemon": "^1.18.9",
+        "typescript": "^3.2.2"
+    },
+    "dependencies": {
+        "chokidar": "^2.0.4",
+        "express": "^4.16.4",
+        "socket.io": "^2.2.0"
+    }
+}

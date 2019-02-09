@@ -1,0 +1,12 @@
+.paddle {
+  position: absolute;
+  width: 20px;
+  height: 100px;
+  background-color: red;
+  left: 200px;
+  top: 0px;
+}
+#canvas-wrap {
+  position: relative;
+  display: none;
+}
