@@ -25,9 +25,9 @@ function calculatePosAndDir() {
   if ((pos.y + ball.height / 2) > canvas.height) { touchDirection = DirectionBall.bottom; }
 
 
-  if ((pos.x - ball.width / 2) < ($("#paddle").position().left + $("#paddle").width()/2) && ((pos.y + ball.height / 2) >=  $("#paddle").position().top && (pos.y + ball.height / 2) <=  $("#paddle").position().top + $("#paddle").height())) { touchDirection = DirectionBall.right; }
+  if ((pos.x - ball.width / 2) < ($("#paddle").position().left + $("#paddle").width() / 2) && ((pos.y + ball.height / 2) >= $("#paddle").position().top && (pos.y + ball.height / 2) <= $("#paddle").position().top + $("#paddle").height())) { touchDirection = DirectionBall.right; }
 
-  
+
   if (touchDirection !== undefined) {
     switch (touchDirection) {
       case DirectionBall.left:
@@ -140,34 +140,44 @@ socket.on("join accept", ({ partner }) => {
   });
 
   socket.on("ball change", ({ direction, position }) => {
+    console.log("ball changed position or direction", direction, position);
+  });
+
+  socket.on("game ended", ({ win }) => {
+    console.log("game ended, you", win ? "won" : "lost");
+  });
+
+  socket.on("score changed", ({ you, enemy }) => {
+    console.log("you have", you, "points, the enemy has", enemy, "points");
   });
   setInterval(function () {
     drawBall(pos.x, pos.y);
     calculatePosAndDir();
-    
+
   }, 4);
 });
-window.addEventListener("keydown", function(event){
-  
+window.addEventListener("keydown", function (event) {
+
   let paddel = document.getElementById("paddle");
 
-  ctx.fillRect($("#paddle").offset().left ,50,1,1);
+  ctx.fillRect($("#paddle").offset().left, 50, 1, 1);
   let top;
-  switch(event.code){
-    
+  switch (event.code) {
+
     case "ArrowUp":
-    top =(Number(paddel.style.top.split("px")[0])) - 10;
-    if(top >= 0){
-      paddel.style.top = top+"px";
-    }
-    break;
+      top = (Number(paddel.style.top.split("px")[0])) - 10;
+      if (top >= 0) {
+        paddel.style.top = top + "px";
+      }
+      break;
     case "ArrowDown":
-    
-    top =(Number(paddel.style.top.split("px")[0])) + 10;
-    if(top <= canvas.height){
-      paddel.style.top = top+"px";
-    }
-    break;
+
+      top = (Number(paddel.style.top.split("px")[0])) + 10;
+      if (top <= canvas.height) {
+        paddel.style.top = top + "px";
+      }
+      break;
 
   }
+
 });
