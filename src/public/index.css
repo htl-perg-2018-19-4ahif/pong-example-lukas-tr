@@ -11,7 +11,8 @@
 }
 #canvas-wrap {
   position: absolute;
-  padding:0;margin:0;
+  padding: 0;
+  margin: 0;
 }
 html,
 body {
@@ -19,30 +20,37 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  
 }
 #heading {
-    padding:0;margin:0;
+  padding: 0;
+  margin: 0;
 }
 
-#board{
-    position:absolute;
-}
-#score-wrap{
-    position: absolute;
-    padding:0;margin:0;
-}
-#score{
+#board {
   position: absolute;
 }
-#finishedPage{
+#score-wrap {
+  position: absolute;
+  padding: 0;
+  margin: 0;
+}
+#score {
+  position: absolute;
+}
+#finishedPage {
   display: none;
 }
-#game{
+#game {
   position: relative;
   display: none;
-  padding:0;margin:0;
+  padding: 0;
+  margin: 0;
 }
-#leaveGame{
-  position:absolute;
+#leaveGame {
+  position: absolute;
+  display: none;
+}
+#backToLobby {
+  position: absolute;
+  display: none;
 }

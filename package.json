@@ -4,9 +4,9 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "build": "tsc && cpx ./src/public/index.html ./dist/public/ && cpx ./src/public/index.css ./dist/public/",
+        "build": "tsc && cpx ./src/public/index.html ./dist/public/ && cpx ./src/public/index.css ./dist/public/ && cpx ./src/hammer.js ./dist/public",
         "start": "node dist/server",
-        "dev": "concurrently \"tsc --watch\" \"cpx ./src/**/*.{html,css} ./dist --watch\" \"nodemon dist/server\""
+        "dev": "concurrently \"tsc --watch\" \"cpx ./src/**/*.{js,html,css} ./dist --watch\" \"nodemon dist/server\" \"cpx ./src/hammer.js ./dist/public \""
     },
     "author": "",
     "license": "ISC",
@@ -23,6 +23,7 @@
     "dependencies": {
         "chokidar": "^2.0.4",
         "express": "^4.16.4",
+        "hammerjs": "^2.0.8",
         "socket.io": "^2.2.0"
     }
 }

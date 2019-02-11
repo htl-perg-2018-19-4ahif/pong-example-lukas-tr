@@ -9,15 +9,15 @@
 
   <body>
     <h1 id="heading">Pong</h1>
-    <div id="finishedPage"> </div>
+    <div id="finishedPage"></div>
     <div id="game">
       <div id="score-wrap">
         <canvas id="score" width="0" height="0"></canvas>
       </div>
 
       <div id="canvas-wrap">
-        <div id="leftPaddle" class="leftPaddle"></div>
         <canvas id="board" width="0" height="0"></canvas>
+        <div id="leftPaddle" class="leftPaddle"></div>
         <div id="rightPaddle" class="rightPaddle"></div>
       </div>
     </div>
@@ -34,13 +34,12 @@
     </div>
 
     <br />
-    <div>
-      <button id="leaveGame">leave game</button>
-    </div>
-    
+    <button id="leaveGame">leave game</button>
+    <button id="backToLobby">Back to Lobby</button>
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="./hammer.js"></script>
     <script src="/index.js"></script>
   </body>
 </html>
