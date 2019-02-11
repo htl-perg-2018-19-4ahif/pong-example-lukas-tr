@@ -244,7 +244,8 @@ socket.on("join accept", ({ partner }) => {
   $(document).on("keydown", event => {
     if (event.key === "ArrowUp" || event.key === "ArrowDown") {
       socket.emit("paddle change", {
-        direction: 0.05
+        direction: canvas.height / 20,
+        position: canvas.height/$("#leftPaddle").position().top
       });
       let top;
       if (event.key === "ArrowUp") {
@@ -261,7 +262,7 @@ socket.on("join accept", ({ partner }) => {
       }
       socket.emit("paddle change", {
         direction: canvas.height / 20,
-        position: $("#leftPaddle").position()
+        position: canvas.height/$("#leftPaddle").position().top
       });
     }
   });
@@ -269,7 +270,8 @@ socket.on("join accept", ({ partner }) => {
   $(document).on("keyup", event => {
     if (event.key === "ArrowUp" || event.key === "ArrowDown") {
       socket.emit("paddle change", {
-        direction: Directions.none
+        direction: Directions.none,
+        position: canvas.height/$("#leftPaddle").position().top
       });
     }
   });
@@ -317,8 +319,8 @@ socket.on("join accept", ({ partner }) => {
   hammertime.on("pan", ev =>
     // Put center of paddle to the center of the user's finger
     {
-      
-      leftPaddle.style.top = (ev.center.y - (Number($("#leftPaddle").height()))) + "px";
+      leftPaddle.style.top =
+        ev.center.y - Number($("#leftPaddle").height()) + "px";
     }
   );
 });
@@ -332,6 +334,17 @@ $("#leaveGame").click(() => {
   $("#game").hide();
   $("#partnerChooser").fadeIn();
   $("#loginPage").fadeIn();
+  $("#leaveGame").hide();
+  $("#heading").show();
+});
+
+$("#backToLobby").click(() => {
+  $("#game").hide();
+  $("#partnerChooser").fadeIn();
+  $("#loginPage").fadeIn();
+  $("#backToLobby").hide();
+  $("#finishedPage").hide();
+  $("#heading").show();
 });
 
 socket.on("partner left", ({ you, enemy }) => {
@@ -339,6 +352,8 @@ socket.on("partner left", ({ you, enemy }) => {
   alert("Your partner left");
   $("#game").hide();
   $("#finishedPage").show();
+  $("#backToLobby").show();
+  $("#leaveGame").hide();
   if (you > enemy) {
     $("#finishedPage").append("<h3>YOU WON THE GAME</h3>");
   } else {
