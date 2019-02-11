@@ -182,6 +182,8 @@ io.on("connection", socket => {
       enemy: context.user.points
     });
 
+    console.log("player", user.name, "left");
+
     partner.points = 0;
     user.points = 0;
 
@@ -191,11 +193,13 @@ io.on("connection", socket => {
 
   socket.on("leave game", onLeavePartner);
 
-  socket.on("paddle change", ({ direction }) => {
+  socket.on("paddle change", ({ direction, position = {} }) => {
     if (!context.partner) return;
     context.partner.socket.emit("enemy paddle change", {
       direction,
-      position: context.user.paddle.position
+      position: {
+        y: position.top || position.y || 0
+      }
     });
   });
 });
