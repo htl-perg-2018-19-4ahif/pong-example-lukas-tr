@@ -239,6 +239,7 @@ socket.on("join accept", ({ partner }) => {
   $("#heading").hide();
   $("#partnerChooser").fadeOut();
   $("#game").show();
+  $("#leaveGame").show();
 
   $(document).on("keydown", event => {
     if (event.key === "ArrowUp" || event.key === "ArrowDown") {
@@ -258,7 +259,10 @@ socket.on("join accept", ({ partner }) => {
           leftPaddle.style.top = top + "px";
         }
       }
-      socket.emit("paddle change", { direction: canvas.height / 20 });
+      socket.emit("paddle change", {
+        direction: canvas.height / 20,
+        position: $("#leftPaddle").position()
+      });
     }
   });
 
@@ -274,21 +278,21 @@ socket.on("join accept", ({ partner }) => {
     rightPaddle.style.top =
       Number(leftPaddle.style.top.split("px")[0]) * direction + "px";
   });
-  socket.on("points change", ({you,enemy}) =>{
+  socket.on("points change", ({ you, enemy }) => {
     curScore.left = you;
     curScore.right = enemy;
 
     score();
-  })
+  });
 
   socket.on("ball change", ({ direction, position }) => {
-    pos.x = position.x;
-    pos.y = position.y;
+    pos.x = position.x * canvas.width;
+    pos.y = position.y * canvas.height;
     dir.x = direction.x;
     dir.y = direction.y;
   });
 
-  socket.on("game ended", ({ you,enemy }) => {
+  socket.on("game ended", ({ you, enemy }) => {
     $("#game").hide();
     $("#finishedPage").show();
     if (you > enemy) {
@@ -306,11 +310,17 @@ socket.on("join accept", ({ partner }) => {
 
   game = setInterval(gameLoop, 4);
 
-  /*const hammertime = new Hammer(leftPaddle);
-  hammertime.get('pan').set({ direction: Hammer.DIRECTION_DOWN | Hammer.DIRECTION_UP });
-  hammertime.on('pan', ev => 
+  const hammertime = new Hammer(leftPaddle);
+  hammertime
+    .get("pan")
+    .set({ direction: Hammer.DIRECTION_DOWN | Hammer.DIRECTION_UP });
+  hammertime.on("pan", ev =>
     // Put center of paddle to the center of the user's finger
-    movePaddle(ev.center.y - paddleHalfHeight));*/
+    {
+      
+      leftPaddle.style.top = (ev.center.y - (Number($("#leftPaddle").height()))) + "px";
+    }
+  );
 });
 
 $(window).on("resize", function() {
@@ -319,9 +329,12 @@ $(window).on("resize", function() {
 
 $("#leaveGame").click(() => {
   socket.emit("leave game");
+  $("#game").hide();
+  $("#partnerChooser").fadeIn();
+  $("#loginPage").fadeIn();
 });
 
-socket.on("partner left", ({you,enemy}) => {
+socket.on("partner left", ({ you, enemy }) => {
   // called for this client and partner client
   alert("Your partner left");
   $("#game").hide();
