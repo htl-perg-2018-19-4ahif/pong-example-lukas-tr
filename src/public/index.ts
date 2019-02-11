@@ -49,11 +49,11 @@ function init() {
   pos = { x: canvas.width * 0.5, y: canvas.height * 0.5 };
   const scale = 4;
   leftPaddle.style.left = canvas.width / scale + "px";
-  leftPaddle.style.height = (canvas.height / 10) + "px";
-  leftPaddle.style.width = (canvas.width / 100) + "px";
-  rightPaddle.style.left = (canvas.width / scale) * (scale/4)*3 + "px";
-  rightPaddle.style.height = (canvas.height / 10) + "px"
-  rightPaddle.style.width = (canvas.width / 100) + "px";
+  leftPaddle.style.height = canvas.height / 10 + "px";
+  leftPaddle.style.width = canvas.width / 100 + "px";
+  rightPaddle.style.left = (canvas.width / scale) * (scale / 4) * 3 + "px";
+  rightPaddle.style.height = canvas.height / 10 + "px";
+  rightPaddle.style.width = canvas.width / 100 + "px";
   scoreCtx.font = "20px Arial";
   scoreCtx.fillText(
     "" + curScore.left,
@@ -83,25 +83,25 @@ function calculatePosAndDir() {
 
   if (
     pos.x - ball.width / 2 <=
-      $("#leftPaddle").position().left + $("#leftPaddle").width() / 2 &&
+      $("#leftPaddle").position().left + $("#leftPaddle").width() &&
     (pos.y + ball.height / 2 >= $("#leftPaddle").position().top &&
       pos.y + ball.height / 2 <=
         $("#leftPaddle").position().top + $("#leftPaddle").height())
   ) {
     touchDirection = DirectionBall.right;
-  /*} else if (pos.x - ball.width / 2 < $("#leftPaddle").position().left) {
+    /*} else if (pos.x - ball.width / 2 < $("#leftPaddle").position().left) {
     curScore.right++;
     score();*/
   }
   if (
     pos.x + ball.width / 2 >=
-      $("#rightPaddle").position().left + $("#rightPaddle").width() / 2 &&
+      $("#rightPaddle").position().left + $("#rightPaddle").width() &&
     (pos.y + ball.height / 2 >= $("#rightPaddle").position().top &&
       pos.y + ball.height / 2 <=
         $("#rightPaddle").position().top + $("#rightPaddle").height())
   ) {
     touchDirection = DirectionBall.left;
-  /*} else if (pos.x + ball.width / 2 > $("#rightPaddle").position().left) {
+    /*} else if (pos.x + ball.width / 2 > $("#rightPaddle").position().left) {
     curScore.left++;
     score();*/
   }
@@ -248,7 +248,7 @@ socket.on("join accept", ({ partner }) => {
       let top;
       if (event.key === "ArrowUp") {
         top = Number(leftPaddle.style.top.split("px")[0]) - canvas.height / 20;
-        
+
         if (top >= 0) {
           leftPaddle.style.top = top + "px";
         }
@@ -258,7 +258,7 @@ socket.on("join accept", ({ partner }) => {
           leftPaddle.style.top = top + "px";
         }
       }
-      socket.emit("paddle change",{paddle: leftPaddle});
+      socket.emit("paddle change", { direction: canvas.height / 20 });
     }
   });
 
@@ -271,8 +271,15 @@ socket.on("join accept", ({ partner }) => {
   });
 
   socket.on("enemy paddle change", ({ direction }) => {
-    rightPaddle.style.top = (Number(leftPaddle.style.top.split("px")[0]) * direction) + "px";
+    rightPaddle.style.top =
+      Number(leftPaddle.style.top.split("px")[0]) * direction + "px";
   });
+  socket.on("points change", ({you,enemy}) =>{
+    curScore.left = you;
+    curScore.right = enemy;
+
+    score();
+  })
 
   socket.on("ball change", ({ direction, position }) => {
     pos.x = position.x;
@@ -281,13 +288,13 @@ socket.on("join accept", ({ partner }) => {
     dir.y = direction.y;
   });
 
-  socket.on("game ended", ({ win }) => {
-    console.log("game ended, you", win ? "won" : "lost");
+  socket.on("game ended", ({ you,enemy }) => {
     $("#game").hide();
-    if(win){
-      $("#game").append("<h3>YOU WON THE GAME</h3>");
-    }else{
-      $("#game").append("<h3>YOU LOST THE GAME</h3>");
+    $("#finishedPage").show();
+    if (you > enemy) {
+      $("#finishedPage").append("<h3>YOU WON THE GAME</h3>");
+    } else {
+      $("#finishedPage").append("<h3>YOU LOST THE GAME</h3>");
     }
   });
 
@@ -296,23 +303,32 @@ socket.on("join accept", ({ partner }) => {
     curScore.right = enemy;
     score();
   });
-  
+
   game = setInterval(gameLoop, 4);
+
+  /*const hammertime = new Hammer(leftPaddle);
+  hammertime.get('pan').set({ direction: Hammer.DIRECTION_DOWN | Hammer.DIRECTION_UP });
+  hammertime.on('pan', ev => 
+    // Put center of paddle to the center of the user's finger
+    movePaddle(ev.center.y - paddleHalfHeight));*/
 });
 
 $(window).on("resize", function() {
   resizeBoard();
-  });
+});
 
+$("#leaveGame").click(() => {
+  socket.emit("leave game");
+});
 
-  $("#leaveGame").click(() => {
-    socket.emit("leave game");
-  });
-
-  socket.on("partner left", () => {
-    // called for this client and partner client
-    alert("Your partner left");
-    
-  });
-
-
+socket.on("partner left", ({you,enemy}) => {
+  // called for this client and partner client
+  alert("Your partner left");
+  $("#game").hide();
+  $("#finishedPage").show();
+  if (you > enemy) {
+    $("#finishedPage").append("<h3>YOU WON THE GAME</h3>");
+  } else {
+    $("#finishedPage").append("<h3>YOU LOST THE GAME</h3>");
+  }
+});
