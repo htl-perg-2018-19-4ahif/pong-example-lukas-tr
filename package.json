@@ -4,9 +4,9 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "build": "tsc && cpx ./src/public/index.html ./dist/public/",
+        "build": "tsc && cpx ./src/**/*.html ./dist",
         "start": "node dist/server",
-        "dev": "concurrently \"tsc --watch\" \"cpx ./src/public/index.html ./dist/public/ --watch\" \"nodemon dist/server\""
+        "dev": "concurrently \"tsc --watch\" \"cpx ./src/**/*.{html,css} ./dist --watch\" \"nodemon dist/server\""
     },
     "author": "",
     "license": "ISC",
