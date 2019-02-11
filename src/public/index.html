@@ -1,31 +1,36 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Pong</title>
-    <link type="text/css" rel="stylesheet" href="index.css">
-    <style>
-    </style>
-</head>
+    <link type="text/css" rel="stylesheet" href="index.css" />
+    <style></style>
+  </head>
 
-<body>
-    <h1>Pong</h1>
-    <div id="canvas-wrap">
-        <div id="paddle" class="paddle"></div>
-        <canvas id="myCanvas" width="1400" height="600"></canvas>
+  <body>
+    <h1 id="heading">Pong</h1>
+    <div id="game">
+      <div id="score-wrap">
+        <canvas id="score" width="0" height="0"></canvas>
+      </div>
+      
+      <div id="canvas-wrap">
+        <div id="leftPaddle" class="leftPaddle"></div>
+        <canvas id="board" width="0" height="0"></canvas>
+        <div id="rightPaddle" class="rightPaddle"></div>
+      </div>
     </div>
-    
+    <div id="finishedPage"></div>
 
     <div id="loginPage">
-        name input
-        <input type="text" id="nameInput" />
-        <button type="button" id="submitName">Submit</button>
+      name input
+      <input type="text" id="nameInput" />
+      <button type="button" id="submitName">Submit</button>
     </div>
 
     <div id="partnerChooser">
-        click on a user to play
-        <ul id="userList"></ul>
+      click on a user to play
+      <ul id="userList"></ul>
     </div>
 
     <br />
@@ -33,6 +38,5 @@
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/index.js"></script>
-</body>
-
+  </body>
 </html>
