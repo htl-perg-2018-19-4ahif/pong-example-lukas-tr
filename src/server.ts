@@ -195,10 +195,12 @@ io.on("connection", socket => {
 
   socket.on("paddle change", ({ direction, position = {} }) => {
     if (!context.partner) return;
+    context.user.paddle.position.y =
+      position.top || position.y || position || 0;
     context.partner.socket.emit("enemy paddle change", {
       direction,
       position: {
-        y: position.top || position.y || 0
+        y: context.user.paddle.position.y
       }
     });
   });
@@ -242,61 +244,75 @@ const calculateBallPositionAndDirection = (game: IGame) => {
   };
 
   let touchDirection: DirectionBall;
-  if (game.ball.position.x - ballWidth / 2 < 0) {
-    touchDirection = DirectionBall.right;
-  }
-  if (game.ball.position.y - ballHeight / 2 < 0) {
-    touchDirection = DirectionBall.top;
-  }
-  if (game.ball.position.x + ballWidth / 2 > canvasWidth) {
-    touchDirection = DirectionBall.left;
-  }
-  if (game.ball.position.y + ballHeight / 2 > canvasHeight) {
-    touchDirection = DirectionBall.bottom;
-  }
-  if (
-    game.ball.position.x - ballWidth / 2 <= paddleWidth / 2 &&
-    (game.ball.position.y + ballHeight / 2 >= game.p1.paddle.position.y &&
-      game.ball.position.y + ballHeight / 2 <=
-        game.p1.paddle.position.y + paddleHeight)
-  ) {
-    touchDirection = DirectionBall.right;
-  } else if (game.ball.position.x - ballWidth / 2 < 0) {
-    game.p2.points++;
-    onPlayerScores();
-  }
-  if (
-    game.ball.position.x + ballWidth / 2 >= 1 - paddleWidth + paddleWidth / 2 &&
-    (game.ball.position.y + ballHeight / 2 >= game.p2.paddle.position.y &&
-      game.ball.position.y + ballHeight / 2 <=
-        game.p2.paddle.position.y + paddleHeight)
-  ) {
-    touchDirection = DirectionBall.left;
-  } else if (game.ball.position.x + ballWidth / 2 > 1 - paddleWidth) {
-    game.p1.points++;
-    onPlayerScores();
-  }
-  if (touchDirection !== undefined) {
-    switch (touchDirection) {
-      case DirectionBall.left:
-        game.ball.direction.x = -0.001;
-        break;
-      case DirectionBall.right:
-        game.ball.direction.x = 0.001;
-        break;
-      case DirectionBall.top:
-        game.ball.direction.y = 0.001;
-        break;
-      case DirectionBall.bottom:
-        game.ball.direction.y = -0.001;
-        break;
+
+  for (let i = 0; i < 10; i++) {
+    touchDirection = undefined;
+    if (game.ball.position.x - ballWidth / 2 < 0) {
+      touchDirection = DirectionBall.right;
     }
+    if (game.ball.position.y - ballHeight / 2 < 0) {
+      touchDirection = DirectionBall.top;
+    }
+    if (game.ball.position.x + ballWidth / 2 > canvasWidth) {
+      touchDirection = DirectionBall.left;
+    }
+    if (game.ball.position.y + ballHeight / 2 > canvasHeight) {
+      touchDirection = DirectionBall.bottom;
+    }
+    if (
+      game.ball.position.x - ballWidth / 2 <= paddleWidth / 2 &&
+      (game.ball.position.y + ballHeight / 2 >= game.p1.paddle.position.y &&
+        game.ball.position.y + ballHeight / 2 <=
+          game.p1.paddle.position.y + paddleHeight)
+    ) {
+      touchDirection = DirectionBall.right;
+    } else if (game.ball.position.x - ballWidth / 2 < 0) {
+      game.p2.points++;
+      onPlayerScores();
+    }
+    if (
+      game.ball.position.x + ballWidth / 2 >=
+        1 - paddleWidth + paddleWidth / 2 &&
+      (game.ball.position.y + ballHeight / 2 >= game.p2.paddle.position.y &&
+        game.ball.position.y + ballHeight / 2 <=
+          game.p2.paddle.position.y + paddleHeight)
+    ) {
+      touchDirection = DirectionBall.left;
+    } else if (game.ball.position.x + ballWidth / 2 > 1 - paddleWidth) {
+      game.p1.points++;
+      onPlayerScores();
+    }
+    if (touchDirection !== undefined) {
+      switch (touchDirection) {
+        case DirectionBall.left:
+          game.ball.direction.x = -0.001;
+          break;
+        case DirectionBall.right:
+          game.ball.direction.x = 0.001;
+          break;
+        case DirectionBall.top:
+          game.ball.direction.y = 0.001;
+          break;
+        case DirectionBall.bottom:
+          game.ball.direction.y = -0.001;
+          break;
+      }
+    }
+    game.ball.position.x += game.ball.direction.x;
+    game.ball.position.y += game.ball.direction.y;
   }
-  game.ball.position.x += game.ball.direction.x;
-  game.ball.position.y += game.ball.direction.y;
 
   game.p1.socket.emit("ball change", game.ball);
-  game.p2.socket.emit("ball change", game.ball);
+  game.p2.socket.emit("ball change", {
+    direction: {
+      x: -game.ball.direction.x,
+      y: game.ball.direction.y
+    },
+    position: {
+      x: 1 - game.ball.position.x,
+      y: game.ball.position.y
+    }
+  });
 
   if (game.p1.points > 10 || game.p2.points > 10) {
     game.p1.socket.emit("game ended", {
@@ -322,7 +338,7 @@ let gameLoopInterval;
 const addGameToLoop = (game: IGame) => {
   games.push(game);
   if (!gameLoopInterval) {
-    gameLoopInterval = setInterval(gameLoop, 50);
+    gameLoopInterval = setInterval(gameLoop, 40);
   }
 };
 
