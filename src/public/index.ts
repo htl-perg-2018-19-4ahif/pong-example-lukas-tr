@@ -89,11 +89,11 @@ function calculatePosAndDir() {
         $("#leftPaddle").position().top + $("#leftPaddle").height())
   ) {
     touchDirection = DirectionBall.right;
-  } else if (pos.x - ball.width / 2 < $("#leftPaddle").position().left) {
+  /*} else if (pos.x - ball.width / 2 < $("#leftPaddle").position().left) {
     curScore.right++;
-    score();
+    score();*/
   }
-  /*if (
+  if (
     pos.x + ball.width / 2 >=
       $("#rightPaddle").position().left + $("#rightPaddle").width() / 2 &&
     (pos.y + ball.height / 2 >= $("#rightPaddle").position().top &&
@@ -101,10 +101,10 @@ function calculatePosAndDir() {
         $("#rightPaddle").position().top + $("#rightPaddle").height())
   ) {
     touchDirection = DirectionBall.left;
-  } else if (pos.x + ball.width / 2 > $("#rightPaddle").position().left) {
+  /*} else if (pos.x + ball.width / 2 > $("#rightPaddle").position().left) {
     curScore.left++;
-    score();
-  }*/
+    score();*/
+  }
 
   if (touchDirection !== undefined) {
     switch (touchDirection) {
@@ -243,7 +243,7 @@ socket.on("join accept", ({ partner }) => {
   $(document).on("keydown", event => {
     if (event.key === "ArrowUp" || event.key === "ArrowDown") {
       socket.emit("paddle change", {
-        direction: event.key === "ArrowUp" ? Directions.up : Directions.down
+        direction: 0.05
       });
       let top;
       if (event.key === "ArrowUp") {
@@ -271,7 +271,7 @@ socket.on("join accept", ({ partner }) => {
   });
 
   socket.on("enemy paddle change", ({ direction }) => {
-    rightPaddle.style.top = rightPaddle.style.top + direction + "px";
+    rightPaddle.style.top = (Number(leftPaddle.style.top.split("px")[0]) * direction) + "px";
   });
 
   socket.on("ball change", ({ direction, position }) => {
@@ -279,13 +279,15 @@ socket.on("join accept", ({ partner }) => {
     pos.y = position.y;
     dir.x = direction.x;
     dir.y = direction.y;
-    console.log("ball changed position or direction", direction, position);
   });
 
   socket.on("game ended", ({ win }) => {
     console.log("game ended, you", win ? "won" : "lost");
+    $("#game").hide();
     if(win){
-
+      $("#game").append("<h3>YOU WON THE GAME</h3>");
+    }else{
+      $("#game").append("<h3>YOU LOST THE GAME</h3>");
     }
   });
 
@@ -310,7 +312,7 @@ $(window).on("resize", function() {
   socket.on("partner left", () => {
     // called for this client and partner client
     alert("Your partner left");
-    location.reload();
+    
   });
 
 
