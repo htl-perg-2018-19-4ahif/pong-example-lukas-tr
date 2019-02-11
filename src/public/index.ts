@@ -294,9 +294,23 @@ socket.on("join accept", ({ partner }) => {
     curScore.right = enemy;
     score();
   });
+  
   game = setInterval(gameLoop, 4);
 });
 
 $(window).on("resize", function() {
   resizeBoard();
-});
+  });
+
+
+  $("#leaveGame").click(() => {
+    socket.emit("leave game");
+  });
+
+  socket.on("partner left", () => {
+    // called for this client and partner client
+    alert("Your partner left");
+    location.reload();
+  });
+
+
