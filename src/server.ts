@@ -100,16 +100,7 @@ io.on("connection", socket => {
       addGameToLoop({
         p1: context.user,
         p2: context.partner,
-        ball: {
-          position: {
-            x: 0.01,
-            y: 0.01
-          },
-          direction: {
-            x: 0.5,
-            y: 0.5
-          }
-        }
+        ball: getRandomBallData()
       });
     }
   });
@@ -193,10 +184,9 @@ io.on("connection", socket => {
 
   socket.on("leave game", onLeavePartner);
 
-  socket.on("paddle change", ({ direction, position = {} }) => {
+  socket.on("paddle change", ({ direction, position = 0 }) => {
     if (!context.partner) return;
-    context.user.paddle.position.y =
-      position.top || position.y || position || 0;
+    context.user.paddle.position.y = position || 0;
     context.partner.socket.emit("enemy paddle change", {
       direction,
       position: {
@@ -226,6 +216,17 @@ const paddleHeight = 0.1;
 const canvasWidth = 1;
 const canvasHeight = 1;
 
+const getRandomBallData = () => ({
+  position: {
+    x: 0.5,
+    y: 0.5
+  },
+  direction: {
+    x: Math.random() < 0.5 ? -0.001 : 0.001,
+    y: Math.random() < 0.5 ? -0.001 : 0.001
+  }
+});
+
 const calculateBallPositionAndDirection = (game: IGame) => {
   // left ... p1
   // right ... p2
@@ -239,8 +240,7 @@ const calculateBallPositionAndDirection = (game: IGame) => {
       you: game.p2.points,
       enemy: game.p1.points
     });
-    game.ball.position = { x: 0.5, y: 0.5 };
-    game.ball.direction = { x: 0.001, y: 0 };
+    game.ball = getRandomBallData();
   };
 
   let touchDirection: DirectionBall;
