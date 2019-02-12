@@ -28,6 +28,7 @@ body {
 
 #board {
   position: absolute;
+  border: 1px solid blue;
 }
 #score-wrap {
   position: absolute;

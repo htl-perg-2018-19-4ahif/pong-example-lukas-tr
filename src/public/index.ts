@@ -37,9 +37,22 @@ function drawBall(x: number, y: number) {
 }
 function init() {
   scoreCanvas.height = document.body.clientHeight / 10;
-  scoreCanvas.width = document.body.clientWidth;
-  canvas.width = document.body.clientWidth;
-  canvas.height = document.body.clientHeight - scoreCanvas.height;
+  if (
+    document.body.clientHeight - scoreCanvas.height >=
+    document.body.clientWidth
+  ) {
+    canvas.width = document.body.clientWidth;
+    canvas.height = document.body.clientWidth - scoreCanvas.height;
+  } else {
+    canvas.width = document.body.clientHeight - scoreCanvas.height;
+    canvas.height = document.body.clientHeight - scoreCanvas.height;
+  }
+  scoreCanvas.width = canvas.width;
+  canvas.style.left = canvas.width / 2 + "px";
+  canvas.style.right = canvas.width / 2 + "px";
+  scoreCanvas.style.left = canvas.width / 2 + "px";
+  scoreCanvas.style.right = canvas.width / 2 + "px";
+
   canvasWrap.style.top =
     (document.body.clientHeight -
       (document.body.clientHeight - scoreCanvas.height) +
@@ -48,10 +61,14 @@ function init() {
     "px";
   pos = { x: canvas.width * 0.5, y: canvas.height * 0.5 };
   const scale = 4;
-  leftPaddle.style.left = canvas.width / scale + "px";
+  leftPaddle.style.left =
+    canvas.width / scale + Number(canvas.style.left.split("px")[0]) + "px";
   leftPaddle.style.height = canvas.height / 10 + "px";
   leftPaddle.style.width = canvas.width / 100 + "px";
-  rightPaddle.style.left = (canvas.width / scale) * (scale / 4) * 3 + "px";
+  rightPaddle.style.left =
+    (canvas.width / scale) * 3 +
+    Number(canvas.style.right.split("px")[0]) +
+    "px";
   rightPaddle.style.height = canvas.height / 10 + "px";
   rightPaddle.style.width = canvas.width / 100 + "px";
   scoreCtx.font = "20px Arial";
@@ -245,7 +262,7 @@ socket.on("join accept", ({ partner }) => {
     if (event.key === "ArrowUp" || event.key === "ArrowDown") {
       socket.emit("paddle change", {
         direction: canvas.height / 20,
-        position: canvas.height/$("#leftPaddle").position().top
+        position: canvas.height / $("#leftPaddle").position().top
       });
       let top;
       if (event.key === "ArrowUp") {
@@ -262,7 +279,7 @@ socket.on("join accept", ({ partner }) => {
       }
       socket.emit("paddle change", {
         direction: canvas.height / 20,
-        position: canvas.height/$("#leftPaddle").position().top
+        position: canvas.height / $("#leftPaddle").position().top
       });
     }
   });
@@ -270,16 +287,16 @@ socket.on("join accept", ({ partner }) => {
   $(document).on("keyup", event => {
     if (event.key === "ArrowUp" || event.key === "ArrowDown") {
       socket.emit("paddle change", {
-        direction: Directions.none,
-        position: canvas.height/$("#leftPaddle").position().top
+        direction: canvas.height / 20,
+        position: canvas.height / $("#leftPaddle").position().top
       });
     }
   });
 
-  socket.on("enemy paddle change", ({ direction }) => {
-    rightPaddle.style.top =
-      Number(leftPaddle.style.top.split("px")[0]) * direction + "px";
+  socket.on("enemy paddle change", ({ direction, position }) => {
+    rightPaddle.style.top = canvas.height * position.y + "px";
   });
+
   socket.on("points change", ({ you, enemy }) => {
     curScore.left = you;
     curScore.right = enemy;
@@ -335,6 +352,7 @@ $("#leaveGame").click(() => {
   $("#partnerChooser").fadeIn();
   $("#loginPage").fadeIn();
   $("#leaveGame").hide();
+  $("#finishedPage").hide();
   $("#heading").show();
 });
 
