@@ -262,24 +262,24 @@ socket.on("join accept", ({ partner }) => {
     if (event.key === "ArrowUp" || event.key === "ArrowDown") {
       socket.emit("paddle change", {
         direction: canvas.height / 20,
-        position: canvas.height / $("#leftPaddle").position().top
+        position: $("#leftPaddle").position().top / canvas.height 
       });
       let top;
       if (event.key === "ArrowUp") {
         top = Number(leftPaddle.style.top.split("px")[0]) - canvas.height / 20;
-
-        if (top >= 0) {
+        if (top >= Number(canvas.style.top.split("px")[0])) {
           leftPaddle.style.top = top + "px";
         }
       } else if (event.key === "ArrowDown") {
         top = Number(leftPaddle.style.top.split("px")[0]) + canvas.height / 20;
-        if (top <= canvas.height) {
+        console.log("height")
+        if (top + $("#leftPaddle").height() <= canvas.height) {
           leftPaddle.style.top = top + "px";
         }
       }
       socket.emit("paddle change", {
         direction: canvas.height / 20,
-        position: canvas.height / $("#leftPaddle").position().top
+        position:  $("#leftPaddle").position().top /canvas.height 
       });
     }
   });
@@ -338,6 +338,10 @@ socket.on("join accept", ({ partner }) => {
     {
       leftPaddle.style.top =
         ev.center.y - Number($("#leftPaddle").height()) + "px";
+        socket.emit("paddle change", {
+          direction: canvas.height / 20,
+          position: canvas.height / $("#leftPaddle").position().top
+        });
     }
   );
 });
