@@ -143,8 +143,8 @@ function calculatePosAndDir() {
     }
   }
 
-  pos.x = pos.x + window.innerWidth * dir.x;
-  pos.y = pos.y + window.innerHeight * dir.y;
+  pos.x = pos.x + canvas.width * dir.x;
+  pos.y = pos.y + canvas.height * dir.y;
 }
 function score() {
   clearInterval(game);
@@ -260,35 +260,22 @@ socket.on("join accept", ({ partner }) => {
 
   $(document).on("keydown", event => {
     if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-      socket.emit("paddle change", {
-        direction: canvas.height / 20,
-        position: canvas.height / $("#leftPaddle").position().top
-      });
       let top;
       if (event.key === "ArrowUp") {
         top = Number(leftPaddle.style.top.split("px")[0]) - canvas.height / 20;
-
-        if (top >= 0) {
+        if (top >= Number(canvas.style.top.split("px")[0])) {
           leftPaddle.style.top = top + "px";
         }
       } else if (event.key === "ArrowDown") {
         top = Number(leftPaddle.style.top.split("px")[0]) + canvas.height / 20;
-        if (top <= canvas.height) {
+        console.log("height")
+        if (top + $("#leftPaddle").height() <= canvas.height) {
           leftPaddle.style.top = top + "px";
         }
       }
       socket.emit("paddle change", {
         direction: canvas.height / 20,
-        position: canvas.height / $("#leftPaddle").position().top
-      });
-    }
-  });
-
-  $(document).on("keyup", event => {
-    if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-      socket.emit("paddle change", {
-        direction: canvas.height / 20,
-        position: canvas.height / $("#leftPaddle").position().top
+        position:  $("#leftPaddle").position().top /canvas.height 
       });
     }
   });
@@ -338,6 +325,10 @@ socket.on("join accept", ({ partner }) => {
     {
       leftPaddle.style.top =
         ev.center.y - Number($("#leftPaddle").height()) + "px";
+        socket.emit("paddle change", {
+          direction: canvas.height / 20,
+          position: canvas.height / $("#leftPaddle").position().top
+        });
     }
   );
 });
