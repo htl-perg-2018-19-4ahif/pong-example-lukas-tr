@@ -314,7 +314,10 @@ const calculateBallPositionAndDirection = (game: IGame) => {
     }
   });
 
-  if (game.p1.points > 10 || game.p2.points > 10) {
+  if (
+    (game.p1.points >= 11 || game.p2.points >= 11) &&
+    game.p1.points - game.p2.points >= 2
+  ) {
     game.p1.socket.emit("game ended", {
       you: game.p1.points,
       enemy: game.p2.points
