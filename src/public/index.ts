@@ -260,10 +260,6 @@ socket.on("join accept", ({ partner }) => {
 
   $(document).on("keydown", event => {
     if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-      socket.emit("paddle change", {
-        direction: canvas.height / 20,
-        position: $("#leftPaddle").position().top / canvas.height 
-      });
       let top;
       if (event.key === "ArrowUp") {
         top = Number(leftPaddle.style.top.split("px")[0]) - canvas.height / 20;
@@ -280,15 +276,6 @@ socket.on("join accept", ({ partner }) => {
       socket.emit("paddle change", {
         direction: canvas.height / 20,
         position:  $("#leftPaddle").position().top /canvas.height 
-      });
-    }
-  });
-
-  $(document).on("keyup", event => {
-    if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-      socket.emit("paddle change", {
-        direction: canvas.height / 20,
-        position: canvas.height / $("#leftPaddle").position().top
       });
     }
   });
