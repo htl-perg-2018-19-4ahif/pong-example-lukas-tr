@@ -61,14 +61,10 @@ function init() {
     "px";
   pos = { x: canvas.width * 0.5, y: canvas.height * 0.5 };
   const scale = 4;
-  leftPaddle.style.left =
-    canvas.width / scale + Number(canvas.style.left.split("px")[0]) + "px";
+  leftPaddle.style.left = canvas.style.left;
   leftPaddle.style.height = canvas.height / 10 + "px";
   leftPaddle.style.width = canvas.width / 100 + "px";
-  rightPaddle.style.left =
-    (canvas.width / scale) * 3 +
-    Number(canvas.style.right.split("px")[0]) +
-    "px";
+  rightPaddle.style.left = (Number(canvas.style.left.split("px")[0]) * 3) + "px";
   rightPaddle.style.height = canvas.height / 10 + "px";
   rightPaddle.style.width = canvas.width / 100 + "px";
   scoreCtx.font = "20px Arial";
@@ -265,12 +261,15 @@ socket.on("join accept", ({ partner }) => {
         top = Number(leftPaddle.style.top.split("px")[0]) - canvas.height / 20;
         if (top >= Number(canvas.style.top.split("px")[0])) {
           leftPaddle.style.top = top + "px";
+        }else{
+          leftPaddle.style.top = 0+"px";
         }
       } else if (event.key === "ArrowDown") {
         top = Number(leftPaddle.style.top.split("px")[0]) + canvas.height / 20;
-        console.log("height")
         if (top + $("#leftPaddle").height() <= canvas.height) {
           leftPaddle.style.top = top + "px";
+        }else{
+          leftPaddle.style.top = (Number(canvas.style.top.split("px")[0]) + Number(canvas.height) - Number($("#leftPaddle").height()) + Number(canvas.height * 0.005))+"px";
         }
       }
       socket.emit("paddle change", {
