@@ -219,7 +219,7 @@ const canvasHeight = 1;
 const getRandomBallData = () => ({
   position: {
     x: 0.5,
-    y: 0.5
+    y: 0.1 + Math.random() * 0.8 // between .1 and .9
   },
   direction: {
     x: Math.random() < 0.5 ? -0.001 : 0.001,
