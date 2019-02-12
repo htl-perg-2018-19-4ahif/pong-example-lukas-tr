@@ -143,8 +143,8 @@ function calculatePosAndDir() {
     }
   }
 
-  pos.x = pos.x + window.innerWidth * dir.x;
-  pos.y = pos.y + window.innerHeight * dir.y;
+  pos.x = pos.x + canvas.width * dir.x;
+  pos.y = pos.y + canvas.height * dir.y;
 }
 function score() {
   clearInterval(game);
