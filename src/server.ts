@@ -216,16 +216,20 @@ const paddleHeight = 0.1;
 const canvasWidth = 1;
 const canvasHeight = 1;
 
-const getRandomBallData = () => ({
-  position: {
-    x: 0.5,
-    y: 0.1 + Math.random() * 0.8 // between .1 and .9
-  },
-  direction: {
-    x: Math.random() < 0.5 ? -0.001 : 0.001,
-    y: Math.random() < 0.5 ? -0.001 : 0.001
-  }
-});
+const getRandomBallData = () => {
+  const direction = (Math.PI / 4) * 2 * Math.random() + Math.PI / 4;
+
+  return {
+    position: {
+      x: 0.5,
+      y: 0.1 + Math.random() * 0.8 // between .1 and .9
+    },
+    direction: {
+      x: Math.sin(direction) * 0.001,
+      y: Math.cos(direction) * 0.001
+    }
+  };
+};
 
 const calculateBallPositionAndDirection = (game: IGame) => {
   // left ... p1
@@ -260,7 +264,7 @@ const calculateBallPositionAndDirection = (game: IGame) => {
       touchDirection = DirectionBall.bottom;
     }
     if (
-      game.ball.position.x - ballWidth / 2 <= paddleWidth / 2 &&
+      game.ball.position.x - ballWidth / 2 <= paddleWidth &&
       (game.ball.position.y + ballHeight / 2 >= game.p1.paddle.position.y &&
         game.ball.position.y + ballHeight / 2 <=
           game.p1.paddle.position.y + paddleHeight)
@@ -271,32 +275,30 @@ const calculateBallPositionAndDirection = (game: IGame) => {
       onPlayerScores();
     }
     if (
-      game.ball.position.x + ballWidth / 2 >=
-        1 - paddleWidth + paddleWidth / 2 &&
+      game.ball.position.x + ballWidth / 2 >= 1 - paddleWidth &&
       (game.ball.position.y + ballHeight / 2 >= game.p2.paddle.position.y &&
         game.ball.position.y + ballHeight / 2 <=
           game.p2.paddle.position.y + paddleHeight)
     ) {
       touchDirection = DirectionBall.left;
-    } else if (game.ball.position.x + ballWidth / 2 > 1 - paddleWidth) {
+    } else if (game.ball.position.x + ballWidth / 2 > 1) {
       game.p1.points++;
       onPlayerScores();
     }
-    console.log("p1",game.p1.paddle.position.y);
-    console.log("p2",game.p2.paddle.position.y);
+
     if (touchDirection !== undefined) {
       switch (touchDirection) {
         case DirectionBall.left:
-          game.ball.direction.x = -0.001;
+          game.ball.direction.x = -Math.abs(game.ball.direction.x);
           break;
         case DirectionBall.right:
-          game.ball.direction.x = 0.001;
+          game.ball.direction.x = Math.abs(game.ball.direction.x);
           break;
         case DirectionBall.top:
-          game.ball.direction.y = 0.001;
+          game.ball.direction.y = Math.abs(game.ball.direction.y);
           break;
         case DirectionBall.bottom:
-          game.ball.direction.y = -0.001;
+          game.ball.direction.y = -Math.abs(game.ball.direction.y);
           break;
       }
     }
