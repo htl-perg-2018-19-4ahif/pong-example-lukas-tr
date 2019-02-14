@@ -60,13 +60,15 @@ function init() {
       2 +
     "px";
   pos = { x: canvas.width * 0.5, y: canvas.height * 0.5 };
-  const scale = 4;
-  leftPaddle.style.left = canvas.style.left;
+
   leftPaddle.style.height = canvas.height / 10 + "px";
   leftPaddle.style.width = canvas.width / 100 + "px";
-  rightPaddle.style.left = (Number(canvas.style.left.split("px")[0]) * 3) + "px";
+  leftPaddle.style.left = canvas.style.left ;
+
+
   rightPaddle.style.height = canvas.height / 10 + "px";
   rightPaddle.style.width = canvas.width / 100 + "px";
+  rightPaddle.style.left = (((Number(canvas.style.left.split("px")[0])) * 3)  - Number(rightPaddle.style.width.split("px")[0])/2) + "px";
   scoreCtx.font = "20px Arial";
   scoreCtx.fillText(
     "" + curScore.left,
@@ -340,7 +342,7 @@ $("#leaveGame").click(() => {
   socket.emit("leave game");
   $("#game").hide();
   $("#partnerChooser").fadeIn();
-  $("#loginPage").fadeIn();
+  //$("#loginPage").fadeIn();
   $("#leaveGame").hide();
   $("#finishedPage").hide();
   $("#heading").show();
@@ -349,7 +351,7 @@ $("#leaveGame").click(() => {
 $("#backToLobby").click(() => {
   $("#game").hide();
   $("#partnerChooser").fadeIn();
-  $("#loginPage").fadeIn();
+  //$("#loginPage").fadeIn();
   $("#backToLobby").hide();
   $("#finishedPage").hide();
   $("#heading").show();
