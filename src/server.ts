@@ -282,6 +282,8 @@ const calculateBallPositionAndDirection = (game: IGame) => {
       game.p1.points++;
       onPlayerScores();
     }
+    console.log("p1",game.p1.paddle.position.y);
+    console.log("p2",game.p2.paddle.position.y);
     if (touchDirection !== undefined) {
       switch (touchDirection) {
         case DirectionBall.left:
