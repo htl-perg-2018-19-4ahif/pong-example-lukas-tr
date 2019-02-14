@@ -96,7 +96,7 @@ function calculatePosAndDir() {
 
   if (
     pos.x - ball.width / 2 <=
-      $("#leftPaddle").position().left + $("#leftPaddle").width() &&
+     0 + $("#leftPaddle").width() &&
     (pos.y + ball.height / 2 >= $("#leftPaddle").position().top &&
       pos.y + ball.height / 2 <=
         $("#leftPaddle").position().top + $("#leftPaddle").height())
@@ -108,12 +108,12 @@ function calculatePosAndDir() {
   }
   if (
     pos.x + ball.width / 2 >=
-      $("#rightPaddle").position().left + $("#rightPaddle").width() &&
+      canvas.width - $("#rightPaddle").width() &&
     (pos.y + ball.height / 2 >= $("#rightPaddle").position().top &&
       pos.y + ball.height / 2 <=
         $("#rightPaddle").position().top + $("#rightPaddle").height())
   ) {
-    touchDirection = DirectionBall.left;
+    // touchDirection = DirectionBall.left;
     /*} else if (pos.x + ball.width / 2 > $("#rightPaddle").position().left) {
     curScore.left++;
     score();*/

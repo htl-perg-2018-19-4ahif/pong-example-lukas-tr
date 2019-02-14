@@ -282,6 +282,8 @@ const calculateBallPositionAndDirection = (game: IGame) => {
       game.p1.points++;
       onPlayerScores();
     }
+    console.log("p1",game.p1.paddle.position.y);
+    console.log("p2",game.p2.paddle.position.y);
     if (touchDirection !== undefined) {
       switch (touchDirection) {
         case DirectionBall.left:
@@ -314,7 +316,7 @@ const calculateBallPositionAndDirection = (game: IGame) => {
     }
   });
 
-  if (game.p1.points > 10 || game.p2.points > 10) {
+  if (game.p1.points > 100000000 || game.p2.points > 1000000000) {
     game.p1.socket.emit("game ended", {
       you: game.p1.points,
       enemy: game.p2.points
