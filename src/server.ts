@@ -219,7 +219,7 @@ const canvasHeight = 1;
 const getRandomBallData = () => ({
   position: {
     x: 0.5,
-    y: 0.5
+    y: 0.1 + Math.random() * 0.8 // between .1 and .9
   },
   direction: {
     x: Math.random() < 0.5 ? -0.001 : 0.001,
@@ -316,7 +316,10 @@ const calculateBallPositionAndDirection = (game: IGame) => {
     }
   });
 
-  if (game.p1.points > 100000000 || game.p2.points > 1000000000) {
+  if (
+    (game.p1.points >= 11 || game.p2.points >= 11) &&
+    game.p1.points - game.p2.points >= 2
+  ) {
     game.p1.socket.emit("game ended", {
       you: game.p1.points,
       enemy: game.p2.points
